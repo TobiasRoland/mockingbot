@@ -8,5 +8,8 @@ addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "0.14.0")
      error: not found: value scalaJSModuleKind
      scalaJSModuleKind := ModuleKind.CommonJSModule
      [error] Type error in expression
+
+
+     ... amongst other interesting errors.
 */ 
 
