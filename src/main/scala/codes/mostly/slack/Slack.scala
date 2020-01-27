@@ -1,5 +1,7 @@
 package codes.mostly.slack
 
+import codes.mostly.jsfacade.cryptojs.Crypto
+
 case class RequestSignature(
     rawBody: String,
     timeStamp: String,
@@ -8,8 +10,6 @@ case class RequestSignature(
 
 object Slack {
 
-  // Won't work in scala.js because of javax imports, need to pull in crypto-js instead. 
-  
   // val signatureVersion = "v0"
 
   // def validate(key: String, sig: RequestSignature): Boolean = {
@@ -20,13 +20,8 @@ object Slack {
   //   actualSignature.equals(sig.signature)
   // }
 
-  // import javax.crypto.Mac
-  // import javax.crypto.spec.SecretKeySpec
-
   // private def asHmacSHA256(key: String, baseString: String): Array[Byte] = {
-  //   val secretKeySpec = new SecretKeySpec(key.getBytes(), "HmacSHA256")
-  //   val hmac = Mac.getInstance("HmacSHA256")
-  //   hmac.init(secretKeySpec)
-  //   hmac.doFinal(baseString.getBytes())
+  //   val hmacSha256 = Crypto.HmacSHA256(key, baseString)
+  //   val hexed = 
   // }
 }

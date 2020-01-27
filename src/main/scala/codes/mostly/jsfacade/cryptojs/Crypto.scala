@@ -3,11 +3,24 @@ package codes.mostly.jsfacade.cryptojs
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
-/**
- * Wraps crypto-js/hmac-sha256 to make it less... javascript-y
- */
 @js.native
-@JSImport("crypto-js", JSImport.Namespace) 
+sealed trait Enc extends js.Object
+
+@js.native
+@JSImport("crypto-js", "enc.Hex")
+object Hex extends Enc {
+ def stringify(wordArray: WordArray): String = js.native
+}
+
+
+@js.native
+trait WordArray extends js.Object {
+  def toString(enc: Enc): String = js.native
+  override def toString(): String = js.native
+}
+
+@js.native
+@JSImport("crypto-js", JSImport.Namespace)
 object Crypto extends js.Object {
-    def hmacSHA256(key: String, text: String): String = js.native
+  def HmacSHA256(key: String, text: String): WordArray = js.native
 }

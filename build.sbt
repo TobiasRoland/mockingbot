@@ -11,6 +11,6 @@ libraryDependencies ++= Seq(
   "org.scalatest" %%% "scalatest" % "3.1.0" % "test"
 )
 
-name := """mocksudoingbot"""
+name := """mockingbot"""
 
 npmDependencies in Compile += "crypto-js" -> "3.1.9-1"
