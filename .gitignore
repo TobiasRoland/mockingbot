@@ -7,4 +7,5 @@ null/
 .idea/
 .metals/
 .bloop/
+.vscode/
 index.js
