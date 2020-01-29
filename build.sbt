@@ -3,12 +3,22 @@ enablePlugins(ScalaJSBundlerPlugin)
 resolvers += Resolver.sonatypeRepo("releases")
 scalaVersion := "2.12.10"
 scalaJSUseMainModuleInitializer := false
-scalaJSModuleKind := ModuleKind.CommonJSModule
 
 libraryDependencies ++= Seq(
   "io.scalajs.npm" %%% "express" % "4.14.1-4",
   "org.scala-js" %%% "scalajs-java-time" % "0.2.6",
-  "org.scalatest" %%% "scalatest" % "3.1.0" % "test"
-  )
+  "org.scalatest" %%% "scalatest" % "3.1.0" % "test",
+  ScalablyTyped.S.`safe-json-stringify`
+)
 
 name := """mockingbot"""
+
+
+/* If the library is typed up in `DefinitelyTyped` (has `-dt-` in the version string) you'll also need this.
+ * The reason why is that versions strings there are just comments, and frequently wrong. Automatically including
+ *  that would break your build.
+ */
+npmDependencies in Compile += "safe-json-stringify" -> "1.1"
+
+//
+webpackConfigFile := Some(baseDirectory.value / "my.custom.webpack.config.js")
