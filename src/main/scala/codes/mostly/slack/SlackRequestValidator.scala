@@ -1,51 +1,59 @@
 package codes.mostly.slack
 
-import typings.std.console
+import codes.mostly.slack.Crypto.hmacSha256HexDigest
+import codes.mostly.validation.{SignatureValidator, TimestampValidator}
 
 import scala.scalajs.js
+import scala.scalajs.js.Date
 import scala.scalajs.js.annotation.JSImport
 
-case class RequestSignature(
-  body: String,
-  timeStamp: Int,
-  signature: String,
-)
+case class ValidationInfo(body: String, timeStamp: Double, signature: String)
 
 /**
   * Slack has a fun way of validating requests:
   */
-object SlackRequestValidator {
+class SlackRequestValidator(tsValidator: TimestampValidator = TimestampValidator(),
+                            sigValidator: SignatureValidator = SignatureValidator(slackSecret =)) {
 
-  def validate(key: String, rs: RequestSignature): Either[String, RequestSignature] =
+  def validate(key: String, rs: ValidationInfo): Either[String, ValidationInfo] =
     for {
+      _ <- tsValidator.validateTimestamp(rs.timeStamp)
       _ <- validateSignature(key, rs)
-      // _ <- validateTimestamp(rs) // is replays a big risk? Eh.... /shrug
     } yield rs
 
-  private def validateSignature(key: String, rs: RequestSignature): Either[String, RequestSignature] = {
-    val (version, hash) = rs.signature.span(_ != '=') match {
-      case (v, h) => (v, h.drop(1))
-    }
-    console.log("version: " + version)
-    console.log("hash: " + hash)
-    val baseString = s"$version:${rs.timeStamp}:${rs.body}"
-    console.log(baseString)
-    val digest = Crypto.hmacSha256HexDigest(key, baseString)
-    console.log(digest)
-    val sig = s"$version=$digest"
-    console.log("sig:" + sig)
-    if (rs.signature != sig)
-      Left(s"Signature calculated as: [$sig], which did not match the one claimed: [${rs.signature}]")
-    else Right(rs)
-  }
+  /**
+    * Validates the signature is correct
+    */
+//  private def validateSignature(key: String, rs: ValidationInfo): Either[String, ValidationInfo] = {
+//    val version = rs.signature.takeWhile(_ != '=')
+//    val baseString = s"$version:${rs.timeStamp}:${rs.body}"
+//    val digest = hmacSha256HexDigest(key, baseString)
+//    s"$version=$digest" match {
+//      case rs.signature => Right(rs)
+//      case otherwise => Left(s"Signature calculated as: [$otherwise], which did not match the one claimed in: [$rs]")
+//    }
 
-  // private def validateTimestamp(rs: RequestSignature): Either[String,RequestSignature] = {
-  //   val currentTimestamp = new scala.scalajs.js.Date().getTime().toInt
-  //   val diff = Math.abs(currentTimestamp - rs.timeStamp)
-  //   if (diff > 60 * 5) Left(s"Timestamp is older than is allowed. Current time: $currentTimestamp, timestamp of request: ${rs.timeStamp}")
-  //   else Right(rs)
-  // }
+//  }
 
+  //  /**
+  //    * Protects against replay attacks (outside of a 5 minute window)
+  //    */
+  //  private def validateTimestamp(rs: ValidationInfo): Either[String, ValidationInfo] = {
+  //    val tsMillis  = new Date().getTime()
+  //    val tsSeconds = tsMillis / 1000
+  //    Math.abs(tsSeconds - rs.timeStamp) match {
+  //      case diff if diff <= 60 * 5 => Right(rs)
+  //      case _ =>
+  //        Left(
+  //          s"Timestamp is outside of allowed 5 minute difference. Current time: $tsSeconds, request: ${rs.timeStamp}",
+  //        )
+  //    }
+  //  }
+
+}
+
+object SlackRequestValidator {
+  def apply(): SlackRequestValidator = new SlackRequestValidator()
 }
 
 /**

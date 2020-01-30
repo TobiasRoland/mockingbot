@@ -1,6 +1,5 @@
 name := """mockingbot"""
 scalaVersion := "2.12.10"
-//resolvers += Resolver.sonatypeRepo("releases")
 
 enablePlugins(ScalaJSPlugin)
 enablePlugins(ScalaJSBundlerPlugin)
