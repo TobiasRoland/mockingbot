@@ -1,17 +1,16 @@
+name := """mockingbot"""
+scalaVersion := "2.12.10"
+//resolvers += Resolver.sonatypeRepo("releases")
+
 enablePlugins(ScalaJSPlugin)
 enablePlugins(ScalaJSBundlerPlugin)
-resolvers += Resolver.sonatypeRepo("releases")
-scalaVersion := "2.12.10"
 scalaJSUseMainModuleInitializer := false
 
-libraryDependencies ++= Seq(
-  "io.scalajs.npm" %%% "express" % "4.14.1-4",
-  "org.scala-js" %%% "scalajs-java-time" % "0.2.6",
-  "org.scalatest" %%% "scalatest" % "3.1.0" % "test",
-  ScalablyTyped.S.`safe-json-stringify`
-)
-
-name := """mockingbot"""
+libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.2.6"
+libraryDependencies += "io.scalajs.npm" %%% "express" % "4.14.1-4"
+libraryDependencies += ScalablyTyped.Q.qs
+libraryDependencies += ScalablyTyped.S.`safe-json-stringify`
+libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.0" % "test"
 
 
 /* If the library is typed up in `DefinitelyTyped` (has `-dt-` in the version string) you'll also need this.
@@ -19,6 +18,4 @@ name := """mockingbot"""
  *  that would break your build.
  */
 npmDependencies in Compile += "safe-json-stringify" -> "1.1"
-
-//
-webpackConfigFile := Some(baseDirectory.value / "my.custom.webpack.config.js")
+npmDependencies in Compile += "qs" -> "6.9"

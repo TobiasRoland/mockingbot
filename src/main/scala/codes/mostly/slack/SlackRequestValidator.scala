@@ -1,5 +1,7 @@
 package codes.mostly.slack
 
+import typings.std.console
+
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
@@ -21,10 +23,17 @@ object SlackRequestValidator {
     } yield rs
 
   private def validateSignature(key: String, rs: RequestSignature): Either[String, RequestSignature] = {
-    val (version, hash) = rs.signature.span(_ != '=') match { case (v, h) => (v, h.drop(1)) }
-    val baseString      = s"$version:${rs.timeStamp}:${rs.body}"
-    val digest          = Crypto.hmacSha256HexDigest(key, baseString)
-    val sig             = s"$version=$digest"
+    val (version, hash) = rs.signature.span(_ != '=') match {
+      case (v, h) => (v, h.drop(1))
+    }
+    console.log("version: " + version)
+    console.log("hash: " + hash)
+    val baseString = s"$version:${rs.timeStamp}:${rs.body}"
+    console.log(baseString)
+    val digest = Crypto.hmacSha256HexDigest(key, baseString)
+    console.log(digest)
+    val sig = s"$version=$digest"
+    console.log("sig:" + sig)
     if (rs.signature != sig)
       Left(s"Signature calculated as: [$sig], which did not match the one claimed: [${rs.signature}]")
     else Right(rs)
@@ -58,7 +67,8 @@ private object Crypto {
 
   @js.native
   private trait Hmac extends js.Object {
-    def update(vtb: String): Unit          = js.native
+    def update(vtb: String): Unit = js.native
+
     def digest(digestType: String): String = js.native
   }
 
