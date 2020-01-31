@@ -1,17 +1,14 @@
 package codes.mostly
 
-import codes.mostly.Sarcastifier.NextBool
-
-import scala.collection.immutable.Stream.continually
 import scala.util.Random
 
-class Sarcastifier(booleanSource: NextBool = Sarcastifier.nextBool) {
+class Sarcastifier(randomBool: () => Boolean) {
 
   def sarcastify(text: String): String =
     text
-      .zip(continually(booleanSource()))
+      .zip(Stream.continually(randomBool()))
       .map {
-        case (c: Char, true) => c.toUpper
+        case (c: Char, true)  => c.toUpper
         case (c: Char, false) => c.toLower
       }
       .mkString("")
@@ -19,11 +16,8 @@ class Sarcastifier(booleanSource: NextBool = Sarcastifier.nextBool) {
 }
 
 object Sarcastifier {
+  private val rng = new Random()
 
-  def apply(): Sarcastifier = new Sarcastifier()
+  def apply(nextBool: () => Boolean = rng.nextBoolean): Sarcastifier = new Sarcastifier(nextBool)
 
-  type NextBool = () => Boolean
-  private val DefaultRand = new Random()
-
-  private val nextBool: NextBool = DefaultRand.nextBoolean
 }

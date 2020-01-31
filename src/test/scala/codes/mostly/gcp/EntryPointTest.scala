@@ -1,6 +1,6 @@
 package codes.mostly.gcp
 
-import codes.mostly.gcp.EntryPoint.{CloudFunction, Request}
+import codes.mostly.app.EntryPoint.CloudFunction
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -57,9 +57,5 @@ class EntryPointTest extends FlatSpec with Matchers {
 }
 """.stripMargin
 
-  "Entrypoint" should "parse the json and do things right" in {
-    val req = parse(requestJSON).asInstanceOf[Request]
-    CloudFunction(req, null)
-  }
 
 }
