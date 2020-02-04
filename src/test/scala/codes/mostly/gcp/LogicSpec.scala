@@ -5,6 +5,7 @@ import org.scalatest.matchers.should.Matchers
 
 class LogicSpec extends FlatSpec with Matchers {
 
+  //TODO make smoketest
   val requestJSON: String =
     """{
   "headers": {
