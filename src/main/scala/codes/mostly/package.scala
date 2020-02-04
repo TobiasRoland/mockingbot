@@ -7,15 +7,17 @@ import scala.scalajs.js
   */
 package object mostly {
 
-  type JSObj       = js.Object
-  type Secret      = String
-  type Unencrypted = String
-  type Encrypted   = String
-  type Encrypt     = (Secret, Unencrypted) => Encrypted
+  case class Config(slackSecret: Secret, tsMaxDiff: Milliseconds)
+  case class ValidationInfo(body: String, timeStamp: Milliseconds, signature: String)
 
-  type Result[A] = Either[Throwable, A]
-
-  case class ValidationInfo(body: String, timeStamp: Long, signature: String)
+  type JSObj        = js.Object
+  type Milliseconds = Long
+  type Seconds      = Long
+  type Secret       = String
+  type Unencrypted  = String
+  type Encrypted    = String
+  type Encrypt      = (Secret, Unencrypted) => Encrypted
+  type Result[A]    = Either[Throwable, A]
 
   @js.native
   sealed trait Request extends JSObj {

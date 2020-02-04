@@ -1,12 +1,9 @@
 package codes.mostly.gcp
 
-import codes.mostly.app.EntryPoint.CloudFunction
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.should.Matchers
 
-import scala.scalajs.js.JSON.parse
-
-class EntryPointTest extends FlatSpec with Matchers {
+class LogicSpec extends FlatSpec with Matchers {
 
   val requestJSON: String =
     """{
@@ -56,6 +53,5 @@ class EntryPointTest extends FlatSpec with Matchers {
   }
 }
 """.stripMargin
-
 
 }

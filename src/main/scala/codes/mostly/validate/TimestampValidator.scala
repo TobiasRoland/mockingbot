@@ -1,32 +1,19 @@
 package codes.mostly.validate
 
-import codes.mostly.Result
-import codes.mostly.validate.TimestampValidator.{CurrentTimeMilliseconds, Seconds}
+import codes.mostly.{Milliseconds, Result}
 
 import scala.math.abs
 import scala.scalajs.js.Date
 
-class TimestampValidator(readTimestamp: CurrentTimeMilliseconds) {
+class TimestampValidator(time: () => Long = () => new Date().getTime().toLong) {
 
-  def validateTimestamp(ts: Seconds): Result[Unit] = {
-    val curr       = readTimestamp()
-    val tsInMillis = ts * 1000
-    val diff       = abs(curr - tsInMillis)
+  def validateTimestamp(ts: Milliseconds, maxDiff: Milliseconds): Result[Unit] = {
+    val curr = time()
+    val diff = abs(curr - ts)
     Either.cond(
-      test = diff <= 60 * 5,
+      test = diff <= maxDiff,
       right = (),
-      left = new Error(s"Timestamp [$tsInMillis] is outside of allowed 5 minute difference. Current time: $curr}"),
+      left = new Error(s"Timestamp [$ts] is outside of allowed $maxDiff millisecond difference. Current time: $curr"),
     )
   }
-}
-
-object TimestampValidator {
-
-  type Seconds                 = Long
-  type Milliseconds            = Long
-  type CurrentTimeMilliseconds = () => Milliseconds
-
-  private val now: CurrentTimeMilliseconds = () => new Date().getTime().toLong
-
-  def apply(readTimestamp: CurrentTimeMilliseconds = now): TimestampValidator = new TimestampValidator(readTimestamp)
 }
